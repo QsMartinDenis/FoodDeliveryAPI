@@ -8,9 +8,6 @@ REST is an acronym for Representational State Transfer and consists of a set of 
 3. PUT – used to modify data;
 4. DELETE – to delete something;
 
-Note that the action representing an HTTP verb is by convention, in reality, we  can use GET to drop a database for example. We will discuss about this during project development so it will be more clear.
-The Project We will build a set of APIs in .NET Core to serve a food delivery app. 
-
 What you’ll learn
 * to create rest APIs in .Net with C#;
 * to use Dapper to make connections to the DB and to perform CRUD operations;
@@ -24,7 +21,7 @@ What you’ll learn
 # **Part 1 – Database**
 The first task in carrying out this project is to create a database. Information about customers, restaurants, orders, etc. will be stored in this database. Below is a diagram and based on this diagram you will have to create the database. You will notice that this database might contain too little information compared to a real DB, but it is enough to learn concepts related to APIs.
 
-![db]()
+![db](https://github.com/QsMartinDenis/FoodDeliveryAPI/blob/main/img/db.png)
 
 ## **Requirements**
 * create a database based on diagram provided named FoodDelivery;

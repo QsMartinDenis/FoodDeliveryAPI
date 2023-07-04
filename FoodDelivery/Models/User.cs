@@ -1,4 +1,6 @@
-﻿namespace FoodDelivery.Models
+﻿using FoodDelivery.Dto;
+
+namespace FoodDelivery.Models
 {
     public class User
     {
@@ -7,6 +9,6 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public string RoleName { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

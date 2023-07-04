@@ -49,11 +49,14 @@ namespace FoodDelivery.Controllers
 
         private async Task<User?> Authenticate(UserLogin userLogin)
         {
-            var users = await _userRepository.GetUsers();
+            var user = await _userRepository.GetUsers(userLogin.Email, userLogin.Password);
 
-            var currentUser = users.FirstOrDefault(o => o.Email == userLogin.Email &&
-                                                        o.Password == userLogin.Password);
-            return currentUser;
+            if (user == null)
+            {
+                return null;
+            }
+
+            return user;
         }
 
         private string Generate(User user)
@@ -61,13 +64,17 @@ namespace FoodDelivery.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.RoleName)
             };
+
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], 
                 _configuration["Jwt:Audience"], 

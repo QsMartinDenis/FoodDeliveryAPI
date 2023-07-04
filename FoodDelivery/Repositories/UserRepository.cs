@@ -36,19 +36,40 @@ namespace FoodDelivery.Repositories
             }
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<User> GetUsers(string email, string password)
         {
             var query = @"SELECT u.Id AS Id, u.FirstName AS FirstName, u.LastName AS LastName, 
                           u.Email AS Email, u.[Password] AS [Password], r.RoleName AS RoleName
                           FROM UserRole ur
                           INNER JOIN [User] u ON u.Id = ur.UserId
-                          INNER JOIN [Role] r ON r.Id = ur.RoleId";
+                          INNER JOIN [Role] r ON r.Id = ur.RoleId
+                          WHERE Email = @Email AND [Password] = @Password";
+
 
             using (var connection = _context.CreateConnection())
             {
-                var result = await connection.QueryAsync<User>(query);  
+                var parameters = new { Email = email, Password = password };
 
-                return result;
+                var userRolesDictionary = new Dictionary<int, User>();
+
+                var result = await connection.QueryAsync<User, string, User>(query,
+                    (user, role) =>
+                    {
+                        if (!userRolesDictionary.TryGetValue(user.Id, out var currentUser))
+                        {
+                            currentUser = user;
+                            currentUser.Roles = new List<string>();
+                            userRolesDictionary.Add(currentUser.Id, currentUser);
+                        }
+
+                        currentUser.Roles.Add(role);
+
+                        return currentUser;
+                    },
+                    parameters,
+                    splitOn: "RoleName");
+
+                return result.FirstOrDefault();
             }
         }
     }

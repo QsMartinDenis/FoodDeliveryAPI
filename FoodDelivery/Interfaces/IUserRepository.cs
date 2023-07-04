@@ -5,7 +5,7 @@ namespace FoodDelivery.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<IEnumerable<User>> GetUsers();
+        public Task<User> GetUsers(string email, string password);
         public Task<bool> AddUser(UserAddDto userDto);
     }
 }

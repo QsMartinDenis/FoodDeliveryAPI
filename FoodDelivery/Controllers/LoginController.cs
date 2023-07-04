@@ -49,7 +49,7 @@ namespace FoodDelivery.Controllers
 
         private async Task<User?> Authenticate(UserLogin userLogin)
         {
-            var user = await _userRepository.GetUsers(userLogin.Email, userLogin.Password);
+            var user = await _userRepository.GetUsers(userLogin);
 
             if (user == null)
             {

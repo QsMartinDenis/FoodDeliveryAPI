@@ -36,19 +36,21 @@ namespace FoodDelivery.Repositories
             }
         }
 
-        public async Task<User> GetUsers(string email, string password)
+        public async Task<User> GetUsers(UserLogin userLogin)
         {
             var query = @"SELECT u.Id AS Id, u.FirstName AS FirstName, u.LastName AS LastName, 
                           u.Email AS Email, u.[Password] AS [Password], r.RoleName AS RoleName
                           FROM UserRole ur
                           INNER JOIN [User] u ON u.Id = ur.UserId
                           INNER JOIN [Role] r ON r.Id = ur.RoleId
-                          WHERE Email = @Email AND [Password] = @Password";
+                          WHERE Email = @Email AND [Password] COLLATE Latin1_General_CS_AS = @Password";
 
 
             using (var connection = _context.CreateConnection())
             {
-                var parameters = new { Email = email, Password = password };
+                var parameters = new DynamicParameters();
+                parameters.Add("Email", userLogin.Email, DbType.String);
+                parameters.Add("Password", userLogin.Password, DbType.String);
 
                 var userRolesDictionary = new Dictionary<int, User>();
 
